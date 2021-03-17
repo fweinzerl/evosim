@@ -41,11 +41,6 @@ public class Simulation{
 	public float seasonLength = 8000;
 	public float currSeasonalEffect = 0; //do not set this! it gets set in the loop
 	
-	/*//wind
-	public float windEffect = 0.003f;
-	public float curWindChange;
-	public float curWindEffect;*/
-	
 	public float specimenSpawnRate = 6000;
 	public float foodRegrowRate = 3.15478f;
 	public float reinstantiateWind = 70;
@@ -60,7 +55,6 @@ public class Simulation{
 	private long lastStep;
 	private long spawnCounter, growCounter;
 	private double seasonCounter;
-	//private float windCounter;
 	
 	private int w, h;
 	private ArrayList<Specimen> losp; //list of specimen
@@ -95,7 +89,6 @@ public class Simulation{
 		spawnCounter = 0;
 		growCounter = 0;
 		seasonCounter = 0;
-		//windCounter = 0;
 		lastStep = System.nanoTime();
 		
 		addSpecimen(genRandomSpecimen());
@@ -112,18 +105,6 @@ public class Simulation{
 					for(int i = 0; i < losp.size(); i++)
 						losp.get(i).update(UPDATE_CONSTANT);
 					
-					/*//make wind
-					if(windCounter > reinstantiateWind){
-						windCounter = 0;
-						curWindChange = (rand.nextFloat()-.5f) * 0.03f;
-					}
-					curWindEffect += curWindChange;
-					
-					applyWind(losp, windEffect * (float)Math.cos(curWindEffect),
-								windEffect * (float)Math.sin(curWindEffect));
-					applyWind(lof, windEffect * (float)Math.cos(curWindEffect),
-								windEffect * (float)Math.sin(curWindEffect));*/
-					
 					currSeasonalEffect = (float) Math.sin(seasonCounter/seasonLength*6.28318) * seasonEffect;
 					
 					for(;spawnCounter > specimenSpawnRate; spawnCounter -= specimenSpawnRate)
@@ -136,7 +117,6 @@ public class Simulation{
 					spawnCounter++;
 					growCounter++;
 					seasonCounter = (seasonCounter+1) % seasonLength;
-					//windCounter++;
 				}
 			}
 			
@@ -184,12 +164,12 @@ public class Simulation{
 	
 	public void draw(Graphics g){
 		try{
-			for(int i = 0; i < losp.size(); i++)
-				losp.get(i).draw(g);
-			for(int i = 0; i < lof.size(); i++)
-				lof.get(i).draw(g);
-		}catch(NullPointerException npe){ }
-		catch(IndexOutOfBoundsException ioobe){ }
+			for(Specimen sp : losp)
+				sp.draw(g);
+			for(Food f : lof)
+				f.draw(g);
+		}catch(NullPointerException npe){}
+		catch(IndexOutOfBoundsException ioobe){}
 		Toolkit.getDefaultToolkit().sync();
 	}
 }

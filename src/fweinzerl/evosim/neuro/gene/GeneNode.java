@@ -5,7 +5,7 @@ public class GeneNode{
 	private int type;
 	
 	public GeneNode(/*int innovation, */int type){
-		innov = NeuroGenome.globalInnovationNrNode;//innovation;
+		innov = NeuroGenome.globalInnovationNrNode++;//innovation;
 		this.type = type;
 	}
 	
