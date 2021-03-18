@@ -50,15 +50,12 @@ public class NodeBrain extends Brain{
 		
 		midNodes = new ConnectionNode[nodes.length];
 		for(int i = 0; i < midNodes.length; i++)
-			//switch(nodes[i].getType()){
-			//case NeuroGenome.NODE_TYPE_SIGMOID:
 			midNodes[i] = new SigmoidNode(nodes[i].getInnovation());
-				//break;
-			//}
 		
 		for(GeneConnection gc : conns)
 			if(gc.enabled)
 				((PositiveNode)getNodeByInnov(gc.getDestNode())).addDendrite(getNodeByInnov(gc.getSrcNode()), gc.getWeight());
+		// TODO: if nodes are not in topological order here, there might be problems with processing later
 	}
 
 	public void process(){

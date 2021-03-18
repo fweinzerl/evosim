@@ -12,6 +12,7 @@ public abstract class Specimen extends SimulationObject{
 	
 	//genetic parameters
 	protected WholeGenome g;
+	
 	protected Brain b;
 	
 	public Specimen(float x, float y, float size, float initSaturation,/* float speed,*/ Brain b){
