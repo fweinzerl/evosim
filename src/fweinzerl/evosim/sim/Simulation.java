@@ -164,10 +164,10 @@ public class Simulation{
 	
 	public void draw(Graphics g){
 		try{
-			for(Specimen sp : losp)
-				sp.draw(g);
-			for(Food f : lof)
-				f.draw(g);
+			for(int i = 0; i < losp.size(); i++)// for-each loops will throw exceptions, I don't know why though
+				losp.get(i).draw(g);
+			for(int i = 0; i < lof.size(); i++)
+				lof.get(i).draw(g);
 		}catch(NullPointerException npe){}
 		catch(IndexOutOfBoundsException ioobe){}
 		Toolkit.getDefaultToolkit().sync();

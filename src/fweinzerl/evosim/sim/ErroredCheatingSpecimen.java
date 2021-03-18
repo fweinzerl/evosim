@@ -15,8 +15,8 @@ public class ErroredCheatingSpecimen extends Specimen{
 	private int wiggleCounter;
 	private float brainValX, brainValY; //used to sustain perceived information
 	
-	public ErroredCheatingSpecimen(float x, float y, float size, float initSaturation,/* float speed,*/ SimpleBrain b, float accuracy){
-		super(x, y, size, initSaturation,/* speed,*/ b);
+	public ErroredCheatingSpecimen(float x, float y, float size, float initSaturation, SimpleBrain b, float accuracy){
+		super(x, y, size, initSaturation, b);
 		acc = accuracy;
 		wiggleCounter = 0;
 	}
@@ -49,8 +49,8 @@ public class ErroredCheatingSpecimen extends Specimen{
 				b.setInput(1, 0);
 			}
 		}else{
-			b.setInput(0, brainValX);
-			b.setInput(1, brainValY);
+			/*b.setInput(0, brainValX);
+			b.setInput(1, brainValY);*/
 		}
 		wiggleCounter = (wiggleCounter+1) % WIGGLE_COUNTER_LIMIT;
 	}

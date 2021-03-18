@@ -1,7 +1,7 @@
 package fweinzerl.evosim.sim.gene;
 
 import fweinzerl.evosim.sim.Simulation;
-import fweinzerl.evosim.sim.Specimen;
+import fweinzerl.evosim.util.Util;
 
 public class SimplePhysicalGenome extends PhysicalGenome{
 	private float size;
@@ -15,6 +15,6 @@ public class SimplePhysicalGenome extends PhysicalGenome{
 	
 	@Override
 	public SimplePhysicalGenome mutate(float rate){
-		return new SimplePhysicalGenome(sim, (float)Specimen.addSigmoid(size, (sim.rand.nextFloat()-0.5)*rate*(sim.maxSize-sim.minSize), sim.minSize, sim.maxSize));
+		return new SimplePhysicalGenome(sim, (float) Util.addSigmoid(size, (sim.rand.nextFloat()-0.5)*rate*(sim.maxSize-sim.minSize), sim.minSize, sim.maxSize));
 	}
 }

@@ -4,7 +4,7 @@ import fweinzerl.evosim.gui.MyFrame;
 import fweinzerl.evosim.neuro.SimpleBrain;
 import fweinzerl.evosim.sim.*;
 
-public class Start {
+public class Start{
 	public static void main(String args[]){
 		Simulation sim = new Simulation();
 		MyFrame frame = new MyFrame(sim);
