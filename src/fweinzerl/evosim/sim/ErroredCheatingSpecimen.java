@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import fweinzerl.evosim.neuro.Brain;
 import fweinzerl.evosim.neuro.NodeBrain;
 import fweinzerl.evosim.neuro.SimpleBrain;
+import fweinzerl.evosim.util.Util;
 
 public class ErroredCheatingSpecimen extends Specimen{
 	public static final int WIGGLE_COUNTER_LIMIT = 4;
@@ -26,17 +27,17 @@ public class ErroredCheatingSpecimen extends Specimen{
 			if(sim.getListOfFood().size() > 0){
 				Food f = sim.getListOfFood().get(0);
 				float nearestDx = f.x-x,		nearestDy = f.y-y;
-				float nearestDist = (float)Math.sqrt(nearestDx*nearestDx+nearestDy*nearestDy);
+				float nearestDist = (float)Math.sqrt(nearestDx*nearestDx + nearestDy*nearestDy);
 				
 				for(int i = 0; i < sim.getListOfFood().size(); i++){
 					f = sim.getListOfFood().get(i);
 					float dx = f.x-x,		dy = f.y-y;
-					float dist = (float)Math.sqrt(dx*dx+dy*dy);
+					float dist = (float)Math.sqrt(dx*dx + dy*dy);
 					if(dist < nearestDist){
 						nearestDx = dx; nearestDy = dy;
 						nearestDist = dist;
 					}
-				}//found nearest
+				}// found nearest
 				
 				float errX = nearestDx * (1 - (100-acc)/50*sim.rand.nextFloat());
 				float errY = nearestDy * (1 - (100-acc)/50*sim.rand.nextFloat());
@@ -47,7 +48,7 @@ public class ErroredCheatingSpecimen extends Specimen{
 				b.setInput(0, 0);
 				b.setInput(1, 0);
 			}
-	}else{
+		}else{
 			b.setInput(0, brainValX);
 			b.setInput(1, brainValY);
 		}
@@ -67,18 +68,20 @@ public class ErroredCheatingSpecimen extends Specimen{
 	@Override
 	protected Specimen mutate(){
 		return new ErroredCheatingSpecimen(x+1, y,
-				(float)super.addSigmoid(spOfInfl, (sim.rand.nextFloat()-0.5)*sim.mutateRate*(sim.maxSize-sim.minSize), sim.minSize, sim.maxSize),
-				saturation,
-				//(float)super.addSigmoid(getSpeed(), (sim.rand.nextFloat()-0.5)*sim.mutateRate*sim.maxSpeed, 0, sim.maxSpeed),
-				new SimpleBrain(2, 2),
-				(float)super.addSigmoid(acc, (sim.rand.nextFloat()-0.5)*sim.mutateRate*sim.maxAccuracy, 0, sim.maxAccuracy));
+						(float) Util.addSigmoid(spOfInfl,
+										(sim.rand.nextFloat()-0.5)*sim.mutateRate*(sim.maxSize-sim.minSize),
+										sim.minSize, sim.maxSize),
+						saturation, new SimpleBrain(2, 2),
+						(float) Util.addSigmoid(acc,
+										(sim.rand.nextFloat()-0.5)*sim.mutateRate*sim.maxAccuracy,
+										0, sim.maxAccuracy));
 	}
 
 	@Override
 	public void draw(Graphics g){
 		Color c = g.getColor();
 		
-		g.setColor(new Color(1, 0, 0, (saturation>100)?1:saturation/100));
+		g.setColor(new Color(1, 0, 0, (saturation>100) ? 1 : saturation/100));
 		g.fillOval((int)(x-spOfInfl),
 					(int)(y-spOfInfl),
 					(int)(2*spOfInfl),
