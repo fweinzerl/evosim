@@ -100,9 +100,9 @@ public class ControlPanel extends JPanel{
 		JSlider sliderSpecimenSpawn = genSlider(0, 30, 10, 1);
 		sliderSpecimenSpawn.addChangeListener(new ChangeListener(){
 			@Override public void stateChanged(ChangeEvent e) {
-				sim.specimenSpawnRate = (float)  (6000 / Math.pow(10, (Integer)sliderSpecimenSpawn.getValue()/10.-1));
+				sim.specimenSpawnRate = (float)  (60000 / Math.pow(10, (Integer)sliderSpecimenSpawn.getValue()/10.-1));
 			} });
-		sliderSpecimenSpawn.setValue(18);
+		sliderSpecimenSpawn.setValue(10);
 		addTextSlidePair("Specimen Spawn Rate:", sliderSpecimenSpawn);
 		
 		JSlider sliderFoodSpawn = genSlider(-10, 15, 10, 1);
@@ -110,7 +110,7 @@ public class ControlPanel extends JPanel{
 			@Override public void stateChanged(ChangeEvent e) {
 				sim.foodRegrowRate = (float)  (.5f / Math.pow(10, (Integer)sliderFoodSpawn.getValue()/10. - 2));
 			} });
-		sliderFoodSpawn.setValue(-3);
+		sliderFoodSpawn.setValue(4);
 		addTextSlidePair("Food Spawn Rate:", sliderFoodSpawn);
 		
 		JSlider sliderMutation = genSlider(0, 20, 7, 1);

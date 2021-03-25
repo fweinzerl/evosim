@@ -1,4 +1,4 @@
-package fweinzerl.evosim.sim.gene;
+package fweinzerl.evosim.gene;
 
 import fweinzerl.evosim.sim.Simulation;
 
@@ -8,5 +8,5 @@ public abstract class PhysicalGenome extends Genome{
 	}
 	
 	@Override
-	public abstract PhysicalGenome mutate(float rate);
+	public abstract PhysicalGenome mutate(double rate);
 }

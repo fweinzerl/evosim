@@ -1,27 +1,27 @@
 package fweinzerl.evosim.sim;
 
+import fweinzerl.evosim.gene.Mutatable;
 import fweinzerl.evosim.neuro.Brain;
-import fweinzerl.evosim.sim.gene.Genome;
-import fweinzerl.evosim.sim.gene.WholeGenome;
+import fweinzerl.evosim.phys.Physiology;
 
-public abstract class Specimen extends SimulationObject{
+public abstract class Specimen extends SimulationObject implements Mutatable{
 	protected float saturation;
 	
-	//genetic parameters
-	protected WholeGenome g;
+	protected Brain brain;
+	protected Physiology physiology;
 	
-	protected Brain b;
-	
-	public Specimen(float x, float y, float size, float initSaturation, Brain b){
-		super(x, y, size);
+	public Specimen(float x, float y, float radius, float initSaturation, Brain brain){
+		super(x, y, radius);
 		saturation = initSaturation;
-		this.b = b;
+		this.brain = brain;
 	}
 	
-	public Specimen(float x, float y, float initSaturation, WholeGenome genome){
-		super(x, y, 0);
+	public Specimen(float x, float y, float initSaturation,
+					Brain brain, Physiology physiology){
+		super(x, y, physiology.getApproximateRadius());
 		saturation = initSaturation;
-		g = genome;
+		this.brain = brain;
+		this.physiology = physiology;
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public abstract class Specimen extends SimulationObject{
 		for(int i = 0; i < sim.getListOfFood().size(); i++){
 			Food f = sim.getListOfFood().get(i);
 			float dx = x-f.x, dy = y-f.y;
-			if(Math.sqrt(dx*dx+dy*dy) < spOfInfl+f.spOfInfl){
+			if(Math.sqrt(dx*dx+dy*dy) < radius+f.radius){
 				saturation += f.getNutritionalVal();
 				sim.getListOfFood().remove(f);
 			}
@@ -38,23 +38,27 @@ public abstract class Specimen extends SimulationObject{
 		
 		//let brain get to work
 		perceive();
-		b.process();
+		this.brain.process();
+		
 		//act
 		float dx = calcMoveDistX();
 		float dy = calcMoveDistY();
-		addToCoordinates(dx, dy);
+		this.x += dx;
+		this.y += dy;
 		float totalDistance = sim.speedFactor * (float)Math.sqrt(dx*dx+dy*dy) * dt;
 		
 		//burn calories
-		saturation -= sim.livingCostsPerTick*dt + totalDistance*sim.movingCostsPerUnit
-				+ sim.sizeCostsPerUnit*spOfInfl*totalDistance + sim.brainCostPerConn*b.getEnabledConnections()*dt;
+		saturation -= sim.livingCostsPerTick*dt
+				+ sim.movingCostsPerUnit * totalDistance
+				+ sim.sizeCostsPerUnit * 3.14*radius*radius
+				+ sim.brainCostPerConn * this.brain.getEnabledConnectionCount();
 		
 		//die if starved / perform mitosis if saturated enough
 		if(saturation < 0)
 			sim.getListOfSpecimen().remove(this);
 		else if(saturation >= sim.saturationLimit){
 			saturation /= 2;
-			sim.addSpecimen(mutate());
+			sim.addSpecimen(this.mutate(this.sim.mutateRate));
 		}
 	}
 	
@@ -62,5 +66,6 @@ public abstract class Specimen extends SimulationObject{
 	protected abstract float calcMoveDistX();
 	protected abstract float calcMoveDistY();
 	
-	protected abstract Specimen mutate();
+	@Override
+	public abstract Specimen mutate(double mutationRate);
 }

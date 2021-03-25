@@ -1,8 +1,8 @@
 package fweinzerl.evosim.neuro;
 
 public class SimpleBrain extends Brain{
-	public SimpleBrain(int inputCount, int outputCount){
-		super(inputCount, outputCount);
+	public SimpleBrain(){
+		super(2, 2);
 	}
 
 	public void process(){
@@ -10,7 +10,11 @@ public class SimpleBrain extends Brain{
 		outputs[1] = inputs[1];
 	}
 	
-	public int getEnabledConnections(){
+	public int getEnabledConnectionCount(){
 		return 2;
+	}
+	
+	public SimpleBrain mutate(double mutationRate){
+		return new SimpleBrain();
 	}
 }

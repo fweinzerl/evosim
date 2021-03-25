@@ -1,4 +1,4 @@
-package fweinzerl.evosim.sim.phys;
+package fweinzerl.evosim.phys;
 
 public class Sensor{
 	private float xStart, yStart;

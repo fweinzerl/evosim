@@ -3,9 +3,9 @@ package fweinzerl.evosim.neuro;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import fweinzerl.evosim.neuro.gene.GeneConnection;
-import fweinzerl.evosim.neuro.gene.GeneNode;
-import fweinzerl.evosim.neuro.gene.NeuroGenome;
+import fweinzerl.evosim.gene.GeneConnection;
+import fweinzerl.evosim.gene.GeneNode;
+import fweinzerl.evosim.gene.NeuroGenome;
 import fweinzerl.evosim.neuro.node.ConnectionNode;
 import fweinzerl.evosim.neuro.node.InitNode;
 import fweinzerl.evosim.neuro.node.Node;
@@ -34,7 +34,7 @@ public class NodeBrain extends Brain{
 	}
 	
 	public NodeBrain(NeuroGenome ng){
-		super(ng.getInputCount(), ng.getOutputCount());
+		super(ng);
 		GeneNode[] nodes = ng.getNodeGenes();
 		GeneConnection[] conns = ng.getConnectionGenes();
 		
@@ -73,7 +73,7 @@ public class NodeBrain extends Brain{
 			outputs[i] = outNodes[i].getState();
 	}
 	
-	public int getEnabledConnections(){
+	public int getEnabledConnectionCount(){
 		return numOfEnbldConnections;
 	}
 	
@@ -112,32 +112,8 @@ public class NodeBrain extends Brain{
 		return null;
 	}
 	
-	private boolean setNode(int index, Node n){
-		if(index < inNodes.length)
-			try{
-				inNodes[index] = (InitNode)n; return true;
-			}catch(ClassCastException e){
-				return false;
-			}
-		
-		index -= inNodes.length;
-		if(index < midNodes.length){
-			try{
-				midNodes[index] = (ConnectionNode)n; return true;
-			}catch(ClassCastException e){
-				return false;
-			}
-		}
-		
-		index -= midNodes.length;
-		if(index < outNodes.length){
-			try{
-				outNodes[index] = (ConnectionNode)n; return true;
-			}catch(ClassCastException e){
-				return false;
-			}
-		}
-		
-		return false;
+	@Override
+	public NodeBrain mutate(double mutationRate){
+		return new NodeBrain(this.neuroGenome.mutate(mutationRate));
 	}
 }

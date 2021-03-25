@@ -9,13 +9,10 @@ import javax.swing.JComponent;
 
 import fweinzerl.evosim.neuro.NodeBrain;
 import fweinzerl.evosim.neuro.SimpleBrain;
-import fweinzerl.evosim.neuro.gene.GeneConnection;
-import fweinzerl.evosim.neuro.gene.GeneNode;
-import fweinzerl.evosim.neuro.gene.NeuroGenome;
-import fweinzerl.evosim.sim.gene.AdvancedWholeGenome;
-import fweinzerl.evosim.sim.gene.SensorPhysicalGenome;
-import fweinzerl.evosim.sim.gene.SimplePhysicalGenome;
-import fweinzerl.evosim.sim.gene.SimpleWholeGenome;
+import fweinzerl.evosim.gene.GeneConnection;
+import fweinzerl.evosim.gene.GeneNode;
+import fweinzerl.evosim.gene.NeuroGenome;
+import fweinzerl.evosim.gene.SimplePhysicalGenome;
 
 public class Simulation{
 	public float avgFoodSize = 6;
@@ -33,15 +30,15 @@ public class Simulation{
 	public float foodNutrientFactor = 5;
 	public float livingCostsPerTick = 0.00398f;
 	public float movingCostsPerUnit = 0.01995f;
-	public float sizeCostsPerUnit = 0;//0.0001f;
+	public float sizeCostsPerUnit = 0.0001f;
 	public float brainCostPerConn = 0.0004f;
 	
 	//seasons
-	public float seasonEffect = 0.84f;
+	public float seasonEffect = 0.64f;
 	public float seasonLength = 8000;
 	public float currSeasonalEffect = 0; //do not set this! it gets set in the loop
 	
-	public float specimenSpawnRate = 6000;
+	public float specimenSpawnRate = 60000;
 	public float foodRegrowRate = 3.15478f;
 	public float reinstantiateWind = 70;
 	
@@ -123,53 +120,34 @@ public class Simulation{
 		}
 	}
 	
-	public void applyWind(ArrayList<? extends SimulationObject> aso, float windX, float windY){
-		for(int i = 0; i < aso.size(); i++){
-			SimulationObject so = aso.get(i);
-			so.addToCoordinates(windX * so.spOfInfl, windY * so.spOfInfl);
-		}
-	}
-	
 	public Specimen genRandomSpecimen(){
-		float size = rand.nextFloat()*maxSize*0.6f+0.4f*maxSize;
+		float size = (rand.nextFloat()*0.6f + 0.4f) * maxSize;
 		
-		return new ErroredCheatingSpecimen(rand.nextInt(w),//-(int)(2*size))+(int)size,
-											rand.nextInt(h),//-(int)(2*size))+(int)size,
-											size,
-											saturationLimit*.75f,
-											new SimpleBrain(2, 2),
-											rand.nextInt(20));
+		/*return new ErroredCheatingSpecimen(rand.nextInt(w), rand.nextInt(h),
+											size, saturationLimit*.75f,
+											new SimpleBrain(), rand.nextInt(20));*/
 		
-		/*ArrayList<GeneConnection> agc = new ArrayList<>();
-		//agc.add(new GeneConnection(0, 3, -.02f));
-		agc.add(new GeneConnection(1, 4, .02f));
-		//agc.add(new GeneConnection(1, 5, -.02f));
-		//agc.add(new GeneConnection(1, 6, .02f));
-		AdvancedWholeGenome swg = new AdvancedWholeGenome(this, new SensorPhysicalGenome(this, size, 1),
-						new NeuroGenome(this, 2, 4, new GeneNode[0], agc));
+		ArrayList<GeneConnection> agc = new ArrayList<>();
+		agc.add(new GeneConnection(0, 2, .02f));
+		NodeBrain brain = new NodeBrain(new NeuroGenome(this, 2, 2, new GeneNode[0], agc));
 		
-		return new SensorSpecimen(rand.nextInt(w),//-(int)(2*size))+(int)size,
-									rand.nextInt(h),//-(int)(2*size))+(int)size,
-									saturationLimit*.75f,
-									swg);*/
+		return new ErroredCheatingSpecimen(rand.nextInt(w), rand.nextInt(h),
+										size, saturationLimit*.75f,
+										brain, rand.nextInt(20));
 	}
 	
 	public Food genRandomFood(){
 		float size = rand.nextFloat()*avgFoodSize + avgFoodSize/2;
-		//float border = (maxSize > size)?maxSize:size;
-		return new Food(rand.nextInt(w),//-(int)(2*border))+(int)border,
-						rand.nextInt(h),//-(int)(2*border))+(int)border,
+		return new Food(rand.nextInt(w),
+						rand.nextInt(h),
 						size);
 	}
 	
 	public void draw(Graphics g){
-		try{
-			for(int i = 0; i < losp.size(); i++)// for-each loops will throw exceptions, I don't know why though
-				losp.get(i).draw(g);
-			for(int i = 0; i < lof.size(); i++)
-				lof.get(i).draw(g);
-		}catch(NullPointerException npe){}
-		catch(IndexOutOfBoundsException ioobe){}
+		for(int i = 0; i < losp.size(); i++)// for-each loops will throw exceptions, I don't know why though
+			losp.get(i).draw(g);
+		for(int i = 0; i < lof.size(); i++)
+			lof.get(i).draw(g);
 		Toolkit.getDefaultToolkit().sync();
 	}
 }

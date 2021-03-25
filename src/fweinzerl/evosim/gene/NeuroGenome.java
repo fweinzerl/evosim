@@ -1,4 +1,4 @@
-package fweinzerl.evosim.neuro.gene;
+package fweinzerl.evosim.gene;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.Random;
 
 import fweinzerl.evosim.sim.Simulation;
 import fweinzerl.evosim.sim.Specimen;
-import fweinzerl.evosim.sim.gene.Genome;
+import fweinzerl.evosim.gene.Genome;
 
 /**
  * This class defines the genome of a neural network in the Simulation.
@@ -43,7 +43,7 @@ public class NeuroGenome extends Genome{
 	//public int getDisabledConnectionCount(){ return disConns.size(); }
 	
 	@Override
-	public NeuroGenome mutate(float rate){
+	public NeuroGenome mutate(double mutationRate){
 		// create new NeuroGenome to be mutated
 		NeuroGenome m = new NeuroGenome(sim, inputCount, outputCount, nodes.clone(), null);
 		m.conns = (ArrayList<GeneConnection>) conns.clone();
@@ -51,7 +51,7 @@ public class NeuroGenome extends Genome{
 		
 		float mutationType = sim.rand.nextFloat();
 		if(conns.size() > 0 && mutationType < 0.7){// 70%: alter connection
-			this.mutate_alterConnection(m, sim.rand, 0.05f, rate);
+			this.mutate_alterConnection(m, sim.rand, 0.05f, (float) mutationRate);
 		}
 		
 		else if(mutationType < 0.82){// 12%: en-/disable connection
@@ -59,7 +59,7 @@ public class NeuroGenome extends Genome{
 		}
 		
 		else{// if(mutationType < 1){// 18%: add new connection
-			mutate_addConnection(m, sim.rand, rate);
+			mutate_addConnection(m, sim.rand, (float) mutationRate);
 		}
 		
 		return m;
@@ -118,10 +118,4 @@ public class NeuroGenome extends Genome{
 											 toIndex,
 											 (r.nextFloat()-.5f) * 20*mutationRate));
 	}
-	
-	/*public static void switchInArray(Object[] a, int i1, int i2){
-		Object temp = a[i1];
-		a[i1] = a[i2];
-		a[i2] = temp;
-	}*/
 }

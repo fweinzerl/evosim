@@ -5,10 +5,7 @@ import java.awt.Graphics;
 
 import fweinzerl.evosim.neuro.Brain;
 import fweinzerl.evosim.neuro.NodeBrain;
-import fweinzerl.evosim.sim.gene.AdvancedWholeGenome;
-import fweinzerl.evosim.sim.gene.SensorPhysicalGenome;
-import fweinzerl.evosim.sim.gene.SimpleWholeGenome;
-import fweinzerl.evosim.sim.phys.Sensor;
+import fweinzerl.evosim.phys.Sensor;
 
 public class SensorSpecimen extends Specimen{
 	public static final float SQ_TO_CIRC = 1.20710679f;
@@ -19,13 +16,13 @@ public class SensorSpecimen extends Specimen{
 	
 	private Sensor[] sensors;
 	
-	public SensorSpecimen(float x, float y, float size, float initSaturation, Brain b){
-		super(x, y, size, initSaturation, b);
+	public SensorSpecimen(float x, float y, float size, float initSaturation, Brain brain){
+		super(x, y, size, initSaturation, brain);
 		sensors = new Sensor[1];
-		sensors[0] = new Sensor(x, y, x+spOfInfl, y);
+		sensors[0] = new Sensor(x, y, x+radius, y);
 	}
 	
-	public SensorSpecimen(float x, float y, float initSaturation, AdvancedWholeGenome genome){
+	/*public SensorSpecimen(float x, float y, float initSaturation, AdvancedWholeGenome genome){
 		super(x, y, initSaturation, genome);
 		spOfInfl = genome.getPhysicalGenome().getSize();
 		b = new NodeBrain(genome.getNeuroGenome());
@@ -33,13 +30,13 @@ public class SensorSpecimen extends Specimen{
 		//provisional
 		sensors = new Sensor[1];
 		sensors[0] = new Sensor(x, y, x+spOfInfl, y);
-	}
+	}*/
 
 	@Override
 	protected void perceive(){
-		b.setInput(sensors.length, 1);
+		this.brain.setInput(sensors.length, 1);
 		
-		for(int s = 0; s < sensors.length; s++){
+		/*for(int s = 0; s < sensors.length; s++){
 			b.setInput(s, 0); //if nothing fits, this will be the answer
 			
 			Float nearestFoodDist = (float) (sim.getWidth() * sim.getHeight()); //safely outside boundaries
@@ -77,24 +74,24 @@ public class SensorSpecimen extends Specimen{
 			}else if(nearestSpecDist - nearestFoodDist > 0.00001){
 				b.setInput(s, PERCEIVED_CL_RED);
 			}
-		}
+		}*/
 	}
 
 	@Override
 	protected float calcMoveDistX(){
-		return b.getOutput(1)-b.getOutput(0);
+		return this.brain.getOutput(1)-this.brain.getOutput(0);
 	}
 
 	@Override
 	protected float calcMoveDistY(){
-		return b.getOutput(3)-b.getOutput(2);
+		return this.brain.getOutput(3)-this.brain.getOutput(2);
 	}
 	
 	@Override
-	protected Specimen mutate(){
-		AdvancedWholeGenome newG = (AdvancedWholeGenome)g.mutate(sim.mutateRate);
+	public Specimen mutate(double mutationRate){
+		//AdvancedWholeGenome newG = (AdvancedWholeGenome)g.mutate(sim.mutateRate);
 		
-		return new SensorSpecimen(x, y, saturation, newG);
+		return null;//new SensorSpecimen(x, y, saturation, newG);
 	}
 
 	@Override
@@ -102,18 +99,18 @@ public class SensorSpecimen extends Specimen{
 		Color c = g.getColor();
 		
 		g.setColor(new Color(1, 0, 0, (saturation>100)?1:saturation/100));
-		g.fillOval((int)(x-spOfInfl),
-					(int)(y-spOfInfl),
-					(int)(2*spOfInfl),
-					(int)(2*spOfInfl));
+		g.fillOval((int)(x-radius),
+					(int)(y-radius),
+					(int)(2*radius),
+					(int)(2*radius));
 		
 		//write connections
 				g.setColor(new Color(1, 1, 1, (saturation>100)?1:saturation/100));
-				int points = b.getEnabledConnections();
+				int points = this.brain.getEnabledConnectionCount();
 				int oldLineX = (int)x, oldLineY = (int)y;
 				for(int i = 0; i < points; i++){
-					int lineX = (int)(x + spOfInfl*(i)/points*Math.cos(i));
-					int lineY = (int)(y + spOfInfl*(i)/points*Math.sin(i));
+					int lineX = (int)(x + radius*(i)/points*Math.cos(i));
+					int lineY = (int)(y + radius*(i)/points*Math.sin(i));
 					g.drawLine(oldLineX, oldLineY, oldLineX=lineX, oldLineY=lineY);
 				}
 		
